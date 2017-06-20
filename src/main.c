@@ -43,52 +43,33 @@ int main(int argc, char * argv[])
   setlocale(LC_ALL, "");
 
   KanjiList * list;
-  if ((list = malloc(sizeof(KanjiList))) == NULL)
-    error_exit("Error: Could not allocate memory for list!");
-
   settings * settings_;
-  if ((settings_ = malloc(sizeof(settings))) == NULL)
-    error_exit("Error: Could not allocate memory for settings!");
+  unsigned int flags = 0x0;
+  char * command;
 
   print_menu();
-  char * command;
   while (1) {
-    
+
+    /* There's no reason why there should ever be a command
+     * more than 15 chars long. */
     command = (char *)calloc(16, sizeof(char));
     fgets(command, 15, stdin);
     chomp(command);
     lower_case(command);
     print_line();
 
-    if (!strcmp(command, "new file")) {
- 
-      if (!new_file(list))
-	do_game();
-      else
-	printf("There was an error!\n");
-
-    } else if (!strcmp(command, "choose file")) {
-
-      if (!choose_file(list, settings_))
-	do_game();
-      else
-	printf("There was an error!\n");
-
-    } else if (!strcmp(command, "help")) {
-
-      print_help();
-
-    } else if (!strcmp(command, "settings")) {
-
-      settings_menu(settings_);
-
-    } else if (!strcmp(command, "exit")) {
-
-      game_exit(list, settings_);
-      break;
-
-    } else
+    if (!strcmp(command, "new file"))		flags |= NEW_FILE;
+    else if (!strcmp(command, "choose file"))	flags |= CHOOSE_FILE;
+    else if (!strcmp(command, "help"))		flags |= HELP;
+    else if (!strcmp(command, "settings"))	flags |= SETTINGS;
+    else if (!strcmp(command, "exit"))		flags |= EXIT;
+    else
       printf("I didn't recognize that! Did you spell something wrong?\n");
+
+    if (flags)
+      do_command(flags);
+    /* TODO: Implement a way using the flags bit mask to safely exit from the
+     * program and save all resources. */
 
     free(command);
     print_line();

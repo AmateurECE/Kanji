@@ -18,11 +18,80 @@
 #include "game_operation.h"
 
 /*******************************************************************************
+ * TYPE DEFINITIONS
+ ***/
+
+/* For convenience, define a wrapper type for the type unsigned int. */
+typedef unsigned int ui_t;
+
+/*******************************************************************************
+ * STATIC FUNCTION PROTOTYPES
+ ***/
+
+/* Functions called by do_command: */
+static void start_game();
+static int new_file(KanjiList *);
+static int choose_file(KanjiList *, settings *);
+static void game_exit(KanjiList *, settings *);
+static void settings_menu(settings *);
+
+/* Other functions: */
+
+/*******************************************************************************
  * API FUNCTIONS
  ***/
 
 /*******************************************************************************
- * FUNCTION:	    do_game
+ * FUNCTION:	    do_command
+ *
+ * DESCRIPTION:	    Host function for all of the source code in this file. takes
+ *		    an unsigned int which is used as a bit mask to determine
+ *		    which command needs to be performed, then calls the function
+ *		    with the right arguments.
+ *
+ * ARGUMENTS:	    flags: unsigned int -- bit mask for determining command.
+ *
+ * RETURN:	    int -- 0 on failure, -1 otherwise.
+ *
+ * NOTES:	    none.
+ ***/
+int do_command(unsigned int flags, settings_t * settings_)
+{
+
+  switch (flags) {
+  case ((ui_t) NEW_FILE):
+    new_file(settings_);
+    break;
+
+  case ((ui_t) CHOOSE_FILE):
+    choose_file(settings_);
+    break;
+
+  case ((ui_t) HELP):
+    print_help();
+    break;
+
+  case ((ui_t) SETTINGS):
+    settings_menu();
+    break;
+
+  case ((ui_t) EXIT):
+    game_exit();
+    break;
+
+  default:
+    return -1;
+  }
+
+  return 0;
+}
+
+/*******************************************************************************
+ * STATIC FUNCTIONS
+ ***/
+
+/*******************************************************************************
+ * FUNCTION:	    start_game
  *
  * DESCRIPTION:	    Asks the user questions about kanji and records the answers.
  *
@@ -32,7 +101,7 @@
  *
  * NOTES:	    
  ***/
-void do_game()
+static void start_game()
 {
 
 }
@@ -49,7 +118,7 @@ void do_game()
  *
  * NOTES:	    none.
  ***/
-int new_file(KanjiList * list)
+static int new_file(KanjiList * list)
 {
   char * filename = calloc(64, sizeof(char));
 
@@ -71,7 +140,9 @@ int new_file(KanjiList * list)
   unsigned int key;
   char * buff;
   print_line();
-  printf("Please enter the kanji you would like to write to this file. When you are finished, please type 'finished' in the Meaning field\n");
+  printf("Please enter the kanji you would like to write to this file."  \
+	 " When you are finished, please type " \
+	 "'finished' in the Meaning field\n");
   while (1) {
 
     buff = calloc(32, sizeof(char));
@@ -124,7 +195,7 @@ int new_file(KanjiList * list)
  *
  * NOTES:	    none.
  ***/
-int choose_file(KanjiList * list, settings * settings_)
+static int choose_file(KanjiList * list, settings * settings_)
 {
   struct setting_t * dir = (struct setting_t *)malloc(sizeof(struct setting_t));
   struct dirent * pDirent = NULL;
@@ -178,7 +249,7 @@ int choose_file(KanjiList * list, settings * settings_)
  *
  * NOTES:	    
  ***/
-void game_exit(KanjiList * list, settings * settings_)
+static void game_exit(KanjiList * list, settings * settings_)
 {
   struct setting_t * file = (struct setting_t *)malloc(sizeof(struct setting_t));
   *file = (struct setting_t){.name = "Current File"};
@@ -201,12 +272,13 @@ void game_exit(KanjiList * list, settings * settings_)
  *
  * NOTES:	    
  ***/
-void settings_menu(settings * settings_)
+static void settings_menu(settings * settings_)
 {
   printf("* ********* SETTINGS **********\n");
   set_traverse(settings_, print_settings);
   printf("* *****************************\n");
-  printf("* Please enter any commands or changes in the form [name] = [value]\n* Or type exit to return to the main menu.\n");
+  printf("* Please enter any commands or changes in the form [name] " \
+	 "= [value]\n* Or type exit to return to the main menu.\n");
   print_line();
   while (1) {
 

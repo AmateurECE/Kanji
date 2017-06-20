@@ -4,7 +4,8 @@
  * AUTHOR:	    Ethan D. Twardy
  *
  * DESCRIPTION:	    Source code containing functions adhering to the function
- *		    prototypes in kanjilib.h
+ *		    prototypes in kanjilib.h. These are mostly auxiliary
+ *		    functions, to be used by code elsewhere.
  *
  * CREATED:	    06/14/2017
  *

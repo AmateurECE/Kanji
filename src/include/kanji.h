@@ -31,6 +31,8 @@
 
 /* The Hash function. */
 #define kanji_hash(list, kanji) ((kanji)->key - (list)->min_key)
+/* Return a reference to a kanji. */
+#define kanji_get(list, index) (&(list->kanji[index]))
 
 /*******************************************************************************
  * TYPE DEFINITIONS
@@ -60,7 +62,6 @@ typedef struct _KanjiList_ {
 extern int kanji_write(KanjiList *, char *);
 extern void kanji_dest(KanjiList *);
 extern int kanji_insert(KanjiList *, Kanji *);
-extern int kanji_get(KanjiList *, unsigned int, Kanji **);
 extern int kanji_init(KanjiList *, char *);
 
 #endif /* __ET_KANJI_H__ */

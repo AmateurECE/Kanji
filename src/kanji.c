@@ -20,13 +20,19 @@
 #include "linkedlist.h"
 
 /*******************************************************************************
+ * STATIC FUNCTION PROTOTYPES
+ ***/
+
+static void get_min_key(KanjiList *);
+
+/*******************************************************************************
  * API FUNCTIONS
  ***/
 
 /*******************************************************************************
  * FUNCTION:	    kanji_write
  *
- * DESCRIPTION:	    Enter new kanji and append them to the data file.
+ * DESCRIPTION:	    Append new kanji to the data file.
  *
  * ARGUMENTS:	    kanji: (KanjiList *) -- the list of kanji to write.
  *
@@ -105,28 +111,6 @@ int kanji_insert(KanjiList * list, Kanji * kanji)
 }
 
 /*******************************************************************************
- * FUNCTION:	    kanji_get
- *
- * DESCRIPTION:	    Gets a kanji without removing it from the list, using its
- *		    key.
- *
- * ARGUMENTS:	    list: (KanjiList *) -- the list to retrieve from.
- *		    key: (unsigned int) -- the index of the kanji in the list.
- *		    dest: (Kanji **) -- the destination for the kanji requested.
- *
- * RETURN:	    int -- 0 on success, 1 otherwise.
- *
- * NOTES:	    
- ***/
-int kanji_get(KanjiList * list, unsigned int index, Kanji ** dest)
-{
-  /* Yeah, I know...there's not a lot of security here. Ah well. */
-
-  *dest = &(list->kanji[index]);
-  return 0;
-}
-
-/*******************************************************************************
  * FUNCTION:	    kanji_init
  *
  * DESCRIPTION:	    Initializes a KanjiList object by reading into it all kanji
@@ -161,26 +145,7 @@ int kanji_init(KanjiList * kanji, char * filename)
   fclose(fp);
   kanji->size = list->size;
   kanji->kanji = calloc(kanji->size, sizeof(Kanji));
-
-  /* FIND THE MINIMUM KEY ENTRY */
-  ListElm * elm;
-  int min = 0, max = 0;
-
-  for (elm = list_head(list); elm != NULL; elm = list_next(elm)) {
-    Kanji * k = (Kanji *)elm->data;
-
-    if (elm == list_head(list))
-      min = k->key;
-    else if (k->key < min)
-      min = k->key;
-    else if (k->key > max)
-      max = k->key;
-
-  }
-  /* DONE. */
-
-  kanji->min_key = min;
-  kanji->max_key = max;
+  get_min_key(kanji);
 
   while (!list_isempty(list)) {
 
@@ -198,5 +163,42 @@ int kanji_init(KanjiList * kanji, char * filename)
   free(list);
   return 0;
 }  
+
+/*******************************************************************************
+ * STATIC FUNCTIONS
+ ***/
+
+/*******************************************************************************
+ * FUNCTION:	    get_min_key
+ *
+ * DESCRIPTION:	    Sets the minimum and maximum keys of the KanjiList object
+ *		    provided.
+ *
+ * ARGUMENTS:	    list: (KanjiList *) -- the kanji list in question.
+ *
+ * RETURN:	    void.
+ *
+ * NOTES:	    none.
+ ***/
+static void get_min_key(KanjiList * list)
+{
+  ListElm * elm;
+  int min = 0, max = 0;
+
+  for (elm = list_head(list); elm != NULL; elm = list_next(elm)) {
+    Kanji * k = (Kanji *)elm->data;
+
+    if (elm == list_head(list))
+      min = k->key;
+    else if (k->key < min)
+      min = k->key;
+    else if (k->key > max)
+      max = k->key;
+
+  }
+
+  kanji->min_key = min;
+  kanji->max_key = max;
+}
 
 /******************************************************************************/
