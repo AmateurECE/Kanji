@@ -7,8 +7,8 @@
 ######################################################################
 
 P=kanji
-OBJECTS = *.c
-CFLAGS = -Wall -O3 -I ./include/
+OBJECTS = ./src/*.c
+CFLAGS = -Wall -O3 -I ./src/include/
 LDLIBS=
 CC=gcc
 CFLAGS_DEBUG = -g -O0 -Wall
@@ -24,7 +24,9 @@ debug:
 	$(CC) $(CFLAGS_DEBUG) -o $(P) $(OBJECTS)
 
 clean:
-	rm -rf *.o
-	rm -rf *.c~
-	rm -rf include/*.h~
+	rm -rf ./src/*.o
+	rm -rf ./src/*.c~
+	rm -rf ./src/include/*.h~
 	rm -rf makefile~
+
+################################################################################
