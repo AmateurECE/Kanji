@@ -7,8 +7,8 @@
 ######################################################################
 
 P=kanji
-OBJECTS = ./src/*.c
-CFLAGS = -Wall -O3 -I ./src/include/
+OBJECTS = ./*.c
+CFLAGS = -Wall -O3 -I ./include/
 LDLIBS=
 CC=gcc
 CFLAGS_DEBUG = -g -O0 -Wall
@@ -16,7 +16,9 @@ CFLAGS_DEBUG = -g -O0 -Wall
 $(P):
 	$(CC) $(CFLAGS) -o $(P) $(OBJECTS)
 
-############## AUXILIARY RULES ##############
+################################################################################
+# AUXILIARY RULES
+###
 
 .PHONY: clean debug
 
@@ -24,9 +26,9 @@ debug:
 	$(CC) $(CFLAGS_DEBUG) -o $(P) $(OBJECTS)
 
 clean:
-	rm -rf ./src/*.o
-	rm -rf ./src/*.c~
-	rm -rf ./src/include/*.h~
-	rm -rf makefile~
+	rm -rf ./include/*.h~
+	rm -rf ./*.c~
+	rm -rf ./include/*.h~
+	rm -rf ./makefile~
 
 ################################################################################
