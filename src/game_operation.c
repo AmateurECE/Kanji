@@ -29,13 +29,14 @@ typedef unsigned int ui_t;
  ***/
 
 /* Functions called by do_command: */
-static void start_game();
 static int new_file(KanjiList *);
 static int choose_file(KanjiList *, settings *);
 static void game_exit(KanjiList *, settings *);
 static void settings_menu(settings *);
 
 /* Other functions: */
+static void start_game();
+static int get_new_kanji(KanjiList *);
 
 /*******************************************************************************
  * API FUNCTIONS
@@ -91,22 +92,6 @@ int do_command(unsigned int flags, settings_t * settings_)
  ***/
 
 /*******************************************************************************
- * FUNCTION:	    start_game
- *
- * DESCRIPTION:	    Asks the user questions about kanji and records the answers.
- *
- * ARGUMENTS:	    
- *
- * RETURN:	    
- *
- * NOTES:	    
- ***/
-static void start_game()
-{
-
-}
-
-/*******************************************************************************
  * FUNCTION:	    new_file
  *
  * DESCRIPTION:	    Creates a new kanji file, and prompts the user to enter
@@ -128,48 +113,14 @@ static int new_file(KanjiList * list)
   
   while (*filename == '\0' || exists(filename)) {
     print_line();
-    printf("That is not an valid filename. Please try again.\n");
+    printf("That is not an valid filename. Please enter the name of a " \
+	   "legal file that does not yet exist in the directory.\n");
     print_line();
     fgets(filename, 63, stdin);
   }
 
   sprintf(filename, "%s.kanji", filename);
-  
-  /* ENTER NEW KANJI */
-  Kanji * kanji;
-  unsigned int key;
-  char * buff;
-  print_line();
-  printf("Please enter the kanji you would like to write to this file."  \
-	 " When you are finished, please type " \
-	 "'finished' in the Meaning field\n");
-  while (1) {
-
-    buff = calloc(32, sizeof(char));
-    print_line();
-    printf("Meaning: ");
-    fgets(buff, 31, stdin);
-    
-    if (!strcmp(buff, "finished"))
-      break;
-
-    kanji = malloc(sizeof(Kanji));
-    strncpy(kanji->meaning, buff, sizeof(kanji->meaning));
-
-    print_line();
-    printf("Key: ");
-    fgets(buff, 32, stdin);
-    key = atoi(buff);
-    kanji->key = key;
-    
-    print_line();
-    printf("Symbol: ");
-    kanji->kanji = fgetwc(stdin);
-
-    if (kanji_insert(list, kanji))
-      return 1;
-
-  }
+  get_new_kanji(list);
 
   print_line();
   printf("Writing Kanji...");
@@ -294,6 +245,86 @@ static void settings_menu(settings * settings_)
     print_line();
   }
   print_menu();
+}
+
+/*******************************************************************************
+ * FUNCTION:	    start_game
+ *
+ * DESCRIPTION:	    Asks the user questions about kanji and records the answers.
+ *
+ * ARGUMENTS:	    
+ *
+ * RETURN:	    
+ *
+ * NOTES:	    
+ ***/
+static void start_game()
+{
+
+}
+
+/*******************************************************************************
+ * FUNCTION:	    get_new_kanji
+ *
+ * DESCRIPTION:	    Get new kanji from stdin.
+ *
+ * ARGUMENTS:	    
+ *
+ * RETURN:	    int -- 0 on success, 1 otherwise.
+ *
+ * NOTES:	    
+ ***/
+static int get_new_kanji(KanjiList * list)
+{
+  Kanji * kanji;
+  unsigned int key;
+  char * buff;
+
+  print_line();
+  printf("Please enter the kanji you would like to write to this file."  \
+	 " When you are finished, please type " \
+	 "'finished' in the Meaning field\n");
+
+  /* TODO: Implement using a switch statement and a sentinel. For example--
+   * int i = 0;
+   * switch (i) {
+   * case (0):
+   *	key = strtod(buff);
+   *	i++;
+   *	break;
+   * ...
+   * }
+   */
+
+  while (1) {
+
+    buff = calloc(32, sizeof(char));
+    print_line();
+    printf("Meaning: ");
+    fgets(buff, 31, stdin);
+    
+    if (!strcmp(buff, "finished"))
+      break;
+
+    kanji = malloc(sizeof(Kanji));
+    strncpy(kanji->meaning, buff, sizeof(kanji->meaning));
+
+    print_line();
+    printf("Key: ");
+    fgets(buff, 32, stdin);
+    key = atoi(buff);
+    kanji->key = key;
+    
+    print_line();
+    printf("Symbol: ");
+    kanji->kanji = fgetwc(stdin);
+
+    if (kanji_insert(list, kanji))
+      return 1;
+
+  }
+  
+  return 0;
 }
 
 /******************************************************************************/

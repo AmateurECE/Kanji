@@ -44,12 +44,13 @@ int main(int argc, char * argv[])
 
   KanjiList * list;
   settings * settings_;
-  unsigned int flags = 0x0;
+  unsigned int flags;
   char * command;
 
   print_menu();
   while (1) {
-
+    flags = 0x0;
+    
     /* There's no reason why there should ever be a command
      * more than 15 chars long. */
     command = (char *)calloc(16, sizeof(char));
