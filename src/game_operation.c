@@ -30,9 +30,9 @@ typedef unsigned int ui_t;
 
 /* Functions called by do_command: */
 static int new_file(KanjiList *);
-static int choose_file(KanjiList *, settings *);
-static void game_exit(KanjiList *, settings *);
-static void settings_menu(settings *);
+static int choose_file(KanjiList *, settings_list *);
+static void game_exit(KanjiList *, settings_list *);
+static void settings_menu(settings_list *);
 
 /* Other functions: */
 static void start_game();
@@ -56,7 +56,7 @@ static int get_new_kanji(KanjiList *);
  *
  * NOTES:	    none.
  ***/
-int do_command(unsigned int flags, settings_t * settings_)
+int do_command(unsigned int flags, settings_list * settings_)
 {
 
   switch (flags) {
@@ -140,13 +140,13 @@ static int new_file(KanjiList * list)
  * DESCRIPTION:	    Prompts the user to choose the kanji file to read from.
  *
  * ARGUMENTS:	    list: (KanjiList *) -- an empty list of kanji
- *		    settings_: (settings *) -- pointer to the settings struct.
+ *		    settings_: (settings_list *) -- pointer to settings.
  *
  * RETURN:	    int -- 0 on success, -1 otherwise.
  *
  * NOTES:	    none.
  ***/
-static int choose_file(KanjiList * list, settings * settings_)
+static int choose_file(KanjiList * list, settings_list * settings_)
 {
   struct setting_t * dir = (struct setting_t *)malloc(sizeof(struct setting_t));
   struct dirent * pDirent = NULL;
@@ -194,13 +194,13 @@ static int choose_file(KanjiList * list, settings * settings_)
  * DESCRIPTION:	    Saves all resources and exits the game.
  *
  * ARGUMENTS:	    list: (KanjiList *) -- the current list of kanji.
- *		    settings_: (settings *) -- pointer to the settings struct.
+ *		    settings_: (settings_list *) -- pointer to the settings.
  *
  * RETURN:	    void.
  *
  * NOTES:	    
  ***/
-static void game_exit(KanjiList * list, settings * settings_)
+static void game_exit(KanjiList * list, settings_list * settings_)
 {
   struct setting_t * file = (struct setting_t *)malloc(sizeof(struct setting_t));
   *file = (struct setting_t){.name = "Current File"};
@@ -217,13 +217,13 @@ static void game_exit(KanjiList * list, settings * settings_)
  *
  * DESCRIPTION:	    allows the user to change any settings, if necessary.
  *
- * ARGUMENTS:	    settings_: (settings *) -- pointer to the settings struct.
+ * ARGUMENTS:	    settings_: (settings_list *) -- pointer to the settings.
  *
  * RETURN:	    void.
  *
  * NOTES:	    
  ***/
-static void settings_menu(settings * settings_)
+static void settings_menu(settings_list * settings_)
 {
   printf("* ********* SETTINGS **********\n");
   set_traverse(settings_, print_settings);

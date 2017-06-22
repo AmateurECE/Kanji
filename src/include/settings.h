@@ -15,6 +15,8 @@
  * INCLUDES
  ***/
 
+#include <stdbool.h>
+
 #include "linkedlist.h"
 
 /*******************************************************************************
@@ -35,16 +37,16 @@ typedef List settings_list;
  * API FUNCTION PROTOTYPES
  ***/
 
-extern int settings_init(settings_list *, int);
-extern int settings_destroy(settings_list *);
+extern int settings_init(settings_list *, bool);
+extern void settings_destroy(settings_list *);
 
-extern void settings_read(void *);
-extern void settings_write(void *);
+extern int settings_read(settings_list *, FILE *);
+extern int settings_write(settings_list *, FILE *);
 
 extern void settings_print(void *);
 extern int settings_update_setting(settings_list *, char *);
 
-extern void settings_get_setting(); /* Add parameters */
-extern void settings_insert(); /* Add parameters */
+extern int settings_get_setting(settings_list *, char *);
+extern int settings_insert(settings_list *, char *, bool, char *);
 
 /******************************************************************************/

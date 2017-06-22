@@ -43,7 +43,7 @@ int main(int argc, char * argv[])
   setlocale(LC_ALL, "");
 
   KanjiList * list;
-  settings * settings_;
+  settings_list * settings_;
   unsigned int flags;
   char * command;
 
